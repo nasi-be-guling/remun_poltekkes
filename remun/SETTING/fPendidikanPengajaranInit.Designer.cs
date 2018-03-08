@@ -1,6 +1,6 @@
-﻿namespace remun
+﻿namespace remun.SETTING
 {
-    partial class Form1
+    partial class fPendidikanPengajaranInit
     {
         /// <summary>
         /// Required designer variable.
@@ -28,12 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // fPendidikanPengajaranInit
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(835, 457);
+            this.Name = "fPendidikanPengajaranInit";
+            this.Text = "fPendidikanPengajaranInit";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
     }
 }
-
