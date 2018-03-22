@@ -254,6 +254,41 @@ namespace remun.ENTRY
             }
             Load_Menu();
         }
+                
+        private bool CekInitTahun(string SqlQueryCek)
+        {
+            string errMsg = string.Empty;
+            bool status = false;
+            _sqlQuery = "";
+            _connection = _connect.Connect(_configurationManager, ref errMsg, "GhY873LhT");
+            if (errMsg != "")
+            {
+                MessageBox.Show(errMsg);
+                return false;
+            }
+            //_sqlQuery = "select id from t_pendidikan_pengajaran_init where idUser = " + CStringCipher.Decrypt(ID_USER, "hjYir83K") +
+            //    " and nama_bulan = " + DateTime.Now.Month + "";
+            MySqlDataReader reader = _connect.Reading(SqlQueryCek, _connection, ref errMsg);
+            if (errMsg != "")
+            {
+                MessageBox.Show(errMsg);
+                return false;
+            }
+            try
+            {
+                if (reader.HasRows)
+                    status = true;
+                else
+                    status = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+            _connection.Close();
+            return status;
+        }
 
         private int statusPegawai = 0;
         private void Load_Menu()
@@ -323,6 +358,12 @@ namespace remun.ENTRY
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
             if (menuItem.Name == "mPendidikanPengajaran")
             {
+                if (!CekInitTahun("select id from t_pendidikan_pengajaran_init where idUser = " + CStringCipher.Decrypt(ID_USER, "hjYir83K") +
+                " and nama_bulan = " + DateTime.Now.Month + ""))
+                {
+                    MessageBox.Show("Anda Belum Menentukan Target\nSilahkan Klik Setting > Inisiasi");
+                    return;
+                }
                 ENTRY.fPendidikanPengajaran _fPendidikanPengajaran;
                 if ((_fPendidikanPengajaran = (ENTRY.fPendidikanPengajaran)FormSudahDibuat(typeof(ENTRY.fPendidikanPengajaran))) == null)
                 {
@@ -355,6 +396,34 @@ namespace remun.ENTRY
                 {
                     _fPenelitian.WindowState = FormWindowState.Maximized;
                     _fPenelitian.Select();
+                }
+            }
+            if (menuItem.Name == "mPendidikanPengajaran_init")
+            {
+                if (CekInitTahun("select id from t_pendidikan_pengajaran_init where idUser = " + CStringCipher.Decrypt(ID_USER, "hjYir83K") +
+                " and nama_bulan = " + DateTime.Now.Month + ""))
+                {
+                    if (MessageBox.Show("Anda sudah menentukan target bulan ini, load data?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.No)
+                        return;
+                }
+                {
+                    SETTING.fPendidikanPengajaranInit _fPendidikanPengajaran_init;
+                    if ((_fPendidikanPengajaran_init = (SETTING.fPendidikanPengajaranInit)FormSudahDibuat(typeof(SETTING.fPendidikanPengajaranInit))) == null)
+                    {
+                        _fPendidikanPengajaran_init = new SETTING.fPendidikanPengajaranInit();
+                        _fPendidikanPengajaran_init.ID_USER = ID_USER;
+                        _fPendidikanPengajaran_init.MdiParent = this;
+                        _fPendidikanPengajaran_init.WindowState = FormWindowState.Maximized;
+                        _fPendidikanPengajaran_init.Show();
+                    }
+                    else
+                    {
+                        //_fPendidikanPengajaran.ID_USER = CStringCipher.Encrypt(idUser, "hjYir83K");
+                        //_fPendidikanPengajaran.Load_Pegawai();
+                        //_fPendidikanPengajaran.Location = new Point(200, 200);
+                        _fPendidikanPengajaran_init.WindowState = FormWindowState.Maximized;
+                        _fPendidikanPengajaran_init.Select();
+                    }
                 }
             }
             else

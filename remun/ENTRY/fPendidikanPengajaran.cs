@@ -227,11 +227,12 @@ namespace remun.ENTRY
             private string tanggal;
             private string nama_bulan;
             private string nama_tahun;
+            private string statusTP;
 
             public Pendidikan_Pengajaran(int id, int noUrut, string unsur, int waktu, decimal sks, decimal jam_sks, decimal jam_smt, decimal jam_bln,
                 decimal h1, decimal h2, decimal h3, decimal h4, decimal h5, decimal h6, decimal h7, decimal h8, decimal h9, decimal h10, decimal h11,
                 decimal h12, decimal h13, decimal h14, decimal h15, decimal h16, decimal h17, decimal h18, decimal h19, decimal h20, decimal h21, decimal h22,
-                int idUser, string tanggal, string nama_bulan, string nama_tahun)
+                int idUser, string tanggal, string nama_bulan, string nama_tahun, string statusTP)
             {
                 this.id = id;
                 this.noUrut = noUrut;
@@ -267,6 +268,7 @@ namespace remun.ENTRY
                 this.tanggal = tanggal;
                 this.nama_bulan = nama_bulan;
                 this.nama_tahun = nama_tahun;
+                this.statusTP = statusTP;
             }
 
             public int Id
@@ -439,6 +441,11 @@ namespace remun.ENTRY
                 get { return nama_tahun; }
                 set { nama_tahun = value; }
             }
+            public string StatusTP
+            {
+                get { return statusTP; }
+                set { statusTP = value; }
+            }
         }
 
         #region CONTOH CLASS
@@ -478,7 +485,7 @@ namespace remun.ENTRY
         }
 
         public string ID_USER;
-        public void Load_Pegawai()
+        private void Load_Kegiatan()
         {
             string errMsg = "";
             _connection = _connect.Connect(_configurationManager, ref errMsg, "GhY873LhT");
@@ -498,9 +505,10 @@ namespace remun.ENTRY
             {
                 if (reader.HasRows)
                 {
+                    int noUrut = 1;
                     while (reader.Read())
                     {
-                        _Pendidikan_Pengajaran.Add(new Pendidikan_Pengajaran(Convert.ToInt16(reader[0]), Convert.ToInt16(reader[1]), Convert.ToString(reader[2]), Convert.ToInt16(reader[3]),
+                        _Pendidikan_Pengajaran.Add(new Pendidikan_Pengajaran(Convert.ToInt16(reader[0]), noUrut++, Convert.ToString(reader[2]), Convert.ToInt16(reader[3]),
                             Convert.ToDecimal(reader[4]), Convert.ToDecimal(reader[5]), Convert.ToDecimal(reader[6]), Convert.ToDecimal(reader[7]),
                             Convert.ToDecimal(reader[8]), Convert.ToDecimal(reader[9]), Convert.ToDecimal(reader[10]), Convert.ToDecimal(reader[11]),
                             Convert.ToDecimal(reader[12]), Convert.ToDecimal(reader[13]), Convert.ToDecimal(reader[14]), Convert.ToDecimal(reader[15]),
@@ -508,13 +516,61 @@ namespace remun.ENTRY
                             Convert.ToDecimal(reader[20]), Convert.ToDecimal(reader[21]), Convert.ToDecimal(reader[22]), Convert.ToDecimal(reader[23]),
                             Convert.ToDecimal(reader[24]), Convert.ToDecimal(reader[25]), Convert.ToDecimal(reader[26]), Convert.ToDecimal(reader[27]),
                             Convert.ToDecimal(reader[28]), Convert.ToDecimal(reader[29]), Convert.ToInt16(reader[30]), Convert.ToString(reader[31]),
-                            Convert.ToString(reader[32]), Convert.ToString(reader[33])));
+                            Convert.ToString(reader[32]), Convert.ToString(reader[33]), Convert.ToString(reader[34])));
                     }
                     reader.Close();
                 }
                 else
                 {
-                    MessageBox.Show("User atau password salah", "ERROR");
+                    Load_Kegiatan_Init();
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+        }
+
+        private void Load_Kegiatan_Init()
+        {
+            string errMsg = "";
+            _connection = _connect.Connect(_configurationManager, ref errMsg, "GhY873LhT");
+            if (errMsg != "")
+            {
+                MessageBox.Show(errMsg);
+                return;
+            }
+            _sqlQuery = "select * from t_pendidikan_pengajaran_init where idUser = '" + CStringCipher.Decrypt(ID_USER, "hjYir83K") + "'";
+            MySqlDataReader reader = _connect.Reading(_sqlQuery, _connection, ref errMsg);
+            if (errMsg != "")
+            {
+                MessageBox.Show(errMsg);
+                return;
+            }
+            try
+            {
+                if (reader.HasRows)
+                {
+                    int noUrut = 1;
+                    while (reader.Read())
+                    {
+                        _Pendidikan_Pengajaran.Add(new Pendidikan_Pengajaran(Convert.ToInt16(reader[0]), noUrut++, Convert.ToString(reader[2]), Convert.ToInt16(reader[3]),
+                            Convert.ToDecimal(reader[4]), Convert.ToDecimal(reader[5]), Convert.ToDecimal(reader[6]), Convert.ToDecimal(reader[7]),
+                            Convert.ToDecimal(reader[8]), Convert.ToDecimal(reader[9]), Convert.ToDecimal(reader[10]), Convert.ToDecimal(reader[11]),
+                            Convert.ToDecimal(reader[12]), Convert.ToDecimal(reader[13]), Convert.ToDecimal(reader[14]), Convert.ToDecimal(reader[15]),
+                            Convert.ToDecimal(reader[16]), Convert.ToDecimal(reader[17]), Convert.ToDecimal(reader[18]), Convert.ToDecimal(reader[19]),
+                            Convert.ToDecimal(reader[20]), Convert.ToDecimal(reader[21]), Convert.ToDecimal(reader[22]), Convert.ToDecimal(reader[23]),
+                            Convert.ToDecimal(reader[24]), Convert.ToDecimal(reader[25]), Convert.ToDecimal(reader[26]), Convert.ToDecimal(reader[27]),
+                            Convert.ToDecimal(reader[28]), Convert.ToDecimal(reader[29]), Convert.ToInt16(reader[30]), Convert.ToString(reader[31]),
+                            Convert.ToString(reader[32]), Convert.ToString(reader[33]), Convert.ToString(reader[34])));
+                    }
+                    reader.Close();
+                }
+                else
+                {
+                    MessageBox.Show("ANDA BELUM MENENTUKAN TARGET", "ERROR");
                     return;
                 }
             }
@@ -530,7 +586,7 @@ namespace remun.ENTRY
             dataGridView1.Width = Width;
             dataGridView1.Height = Height - 300;
             dataGridView1.Dock = DockStyle.Bottom;
-            Load_Pegawai();
+            Load_Kegiatan();
         }
 
         private void button1_Click(object sender, EventArgs e)
