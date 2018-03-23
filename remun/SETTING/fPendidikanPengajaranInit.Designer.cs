@@ -316,7 +316,6 @@
             this.bReset.TabIndex = 18;
             this.bReset.Text = "Reset";
             this.bReset.UseVisualStyleBackColor = true;
-            this.bReset.Visible = false;
             this.bReset.Click += new System.EventHandler(this.bReset_Click);
             // 
             // bTambah

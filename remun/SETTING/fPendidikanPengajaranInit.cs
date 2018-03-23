@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using _encryption;
 using _connectMySQL;
+using System.Globalization;
+using System.Threading;
 
 namespace remun.SETTING
 {
@@ -970,6 +972,8 @@ namespace remun.SETTING
 
         private void bSimpan_Click(object sender, EventArgs e)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+
             if (bSimpan.Text == "Save")
             {
                 if (MessageBox.Show("Apakah sudah fix?", "Confirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -984,8 +988,9 @@ namespace remun.SETTING
                     {
                         if (items.SubItems[7].Text == "0" || items.SubItems[7].Text == "3")
                             _Pendidikan_Pengajaran_Init.Add(new Pendidikan_Pengajaran_Init(null, noUrut++, items.SubItems[1].Text,
-                                Convert.ToInt16(items.SubItems[2].Text), Convert.ToDecimal(items.SubItems[3].Text), Convert.ToDecimal(items.SubItems[4].Text),
-                                Convert.ToDecimal(items.SubItems[5].Text), Convert.ToDecimal(items.SubItems[6].Text), 0, 0, 0, 0, 0,
+                                Convert.ToInt16(items.SubItems[2].Text.Replace(",", ".")), Convert.ToDecimal(items.SubItems[3].Text.Replace(",", ".")), 
+                                Convert.ToDecimal(items.SubItems[4].Text.Replace(",", ".")), Convert.ToDecimal(items.SubItems[5].Text.Replace(",", ".")), 
+                                Convert.ToDecimal(items.SubItems[6].Text.Replace(",", ".")), 0, 0, 0, 0, 0,
                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Convert.ToInt16(CStringCipher.Decrypt(ID_USER, "hjYir83K")),
                                 String.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now), DateTime.Now.Month.ToString(), DateTime.Now.Year.ToString(), "1"));
                         if (items.SubItems[7].Text == "3")
@@ -1029,9 +1034,64 @@ namespace remun.SETTING
             {
                 _sqlQuery = "insert into t_pendidikan_pengajaran_init (noUrut, unsur, waktu, sks, jam_sks, jam_smt, jam_bln, idUser, tanggal, nama_bulan, nama_tahun, status) " +
                     "values (" + noUrut++ + ",'" + things.Unsur + "','" + things.Waktu + "','" + things.Sks + "','" + things.Jam_sks + "','" + things.Jam_smt +
-                    "','" + things.Jam_bln + "','" + things.IdUser + "','" + things.Tanggal + "', '"+ things.Nama_bulan + "','" + things.Nama_tahun + "', " + things.StatusTP + ");";
+                    "','" + things.Jam_bln + "','" + things.IdUser + "','" + things.Tanggal + "', '" + things.Nama_bulan + "','" + things.Nama_tahun + "', " + things.StatusTP + ");";
                 //Clipboard.SetText(_sqlQuery);
+
                 _connect.Insertion(_sqlQuery, _connection, _mysqlTrans, ref errMsg);
+
+                //_sqlQuery = "insert into t_pendidikan_pengajaran_init (noUrut, unsur, waktu, sks, jam_sks, jam_smt, jam_bln, idUser, tanggal, nama_bulan, nama_tahun, status) " +
+                //    "values (@noUrut, @unsur, @waktu, @sks, @jam_sks, @jam_smt, @jam_bln, @idUser, @tanggal, @nama_bulan, @nama_tahun, @status);";
+
+                //MySqlCommand insertCommand = new MySqlCommand(_sqlQuery, _connection, _mysqlTrans);
+                //MySqlParameter param1 = new MySqlParameter("@noUrut", MySqlDbType.Int16);
+                //param1.Value = noUrut++;
+                //insertCommand.Parameters.Add(param1);
+
+                //MySqlParameter param2 = new MySqlParameter("@unsur", MySqlDbType.VarChar);
+                //param1.Value = things.Unsur;
+                //insertCommand.Parameters.Add(param2);
+
+                //MySqlParameter param3 = new MySqlParameter("@waktu", MySqlDbType.Int16);
+                //param1.Value = things.Waktu;
+                //insertCommand.Parameters.Add(param3);
+
+                //MySqlParameter param4 = new MySqlParameter("@sks", MySqlDbType.Decimal);
+                //param1.Value = things.Sks;
+                //insertCommand.Parameters.Add(param4);
+
+                //MySqlParameter param5 = new MySqlParameter("@jam_sks", MySqlDbType.Decimal);
+                //param1.Value = things.Jam_sks;
+                //insertCommand.Parameters.Add(param5);
+
+                //MySqlParameter param6 = new MySqlParameter("@jam_smt", MySqlDbType.Decimal);
+                //param1.Value = things.Jam_smt;
+                //insertCommand.Parameters.Add(param6);
+
+                //MySqlParameter param7 = new MySqlParameter("@jam_bln", MySqlDbType.Decimal);
+                //param1.Value = things.Jam_bln;
+                //insertCommand.Parameters.Add(param7);
+
+                //MySqlParameter param8 = new MySqlParameter("@idUser", MySqlDbType.Int16);
+                //param1.Value = things.IdUser;
+                //insertCommand.Parameters.Add(param8);
+
+                //MySqlParameter param9 = new MySqlParameter("@tanggal", MySqlDbType.DateTime);
+                //param1.Value = things.Tanggal;
+                //insertCommand.Parameters.Add(param9);
+
+                //MySqlParameter param10 = new MySqlParameter("@nama_bulan", MySqlDbType.VarChar);
+                //param1.Value = things.Nama_bulan;
+                //insertCommand.Parameters.Add(param10);
+
+                //MySqlParameter param11 = new MySqlParameter("@nama_tahun", MySqlDbType.VarChar);
+                //param1.Value = things.Nama_tahun;
+                //insertCommand.Parameters.Add(param11);
+
+                //MySqlParameter param12 = new MySqlParameter("@status", MySqlDbType.Int16);
+                //param1.Value = things.StatusTP;
+                //insertCommand.Parameters.Add(param12);
+
+                //insertCommand.ExecuteNonQuery();
             }
 
             if (errMsg != "")
@@ -1059,7 +1119,7 @@ namespace remun.SETTING
             foreach (var things in query)
             {
                 _sqlQuery = "update t_pendidikan_pengajaran_init set status = 0 where id = '"+ things.Id +"';";
-                Clipboard.SetText(_sqlQuery);
+                //Clipboard.SetText(_sqlQuery);
                 _connect.Insertion(_sqlQuery, _connection, _mysqlTrans, ref errMsg);
             }
 
@@ -1075,10 +1135,10 @@ namespace remun.SETTING
 
         private void bReset_Click(object sender, EventArgs e)
         {
-            var query = (from theThings in _Pendidikan_Pengajaran_Init_temp select theThings);
+            var query = (from theThings in _Pendidikan_Pengajaran_Init select theThings);
             foreach (var things in query)
             {
-                MessageBox.Show(things.Id.ToString());
+                MessageBox.Show(things.Unsur.ToString());
                 MessageBox.Show(things.Sks.ToString());
                 MessageBox.Show(things.Jam_sks.ToString());
                 MessageBox.Show(things.Jam_smt.ToString());

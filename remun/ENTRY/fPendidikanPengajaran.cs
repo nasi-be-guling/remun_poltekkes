@@ -608,7 +608,7 @@ namespace remun.ENTRY
             dataGridView1.Height = Height - 300;
             dataGridView1.Dock = DockStyle.Bottom;
             dataGridView1.Columns[0].Visible = false;
-            for (int i = dataGridView1.Columns.Count - 4; i < dataGridView1.Columns.Count; i++)
+            for (int i = dataGridView1.Columns.Count - 5; i < dataGridView1.Columns.Count; i++)
             {
                 dataGridView1.Columns[i].Visible = false;
             }
