@@ -359,10 +359,16 @@ namespace remun.ENTRY
             if (menuItem.Name == "mPendidikanPengajaran")
             {
                 if (!CekInitTahun("select id from t_pendidikan_pengajaran_init where idUser = " + CStringCipher.Decrypt(ID_USER, "hjYir83K") +
-                " and nama_bulan = " + DateTime.Now.Month + ""))
+                " and nama_bulan = " + DateTime.Now.Month + " and nama_tahun = " + DateTime.Now.Year + ""))
                 {
                     MessageBox.Show("Anda Belum Menentukan Target\nSilahkan Klik Setting > Inisiasi");
                     return;
+                }
+                if (CekInitTahun("select id from t_pendidikan_pengajaran where idUser = " + CStringCipher.Decrypt(ID_USER, "hjYir83K") +
+                " and nama_bulan = " + DateTime.Now.Month + " and nama_tahun = " + DateTime.Now.Year + ""))
+                {
+                    if (MessageBox.Show("Anda sudah Mengisi Remun Bulan ini\nLanjut load data?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.No)
+                        return;
                 }
                 ENTRY.fPendidikanPengajaran _fPendidikanPengajaran;
                 if ((_fPendidikanPengajaran = (ENTRY.fPendidikanPengajaran)FormSudahDibuat(typeof(ENTRY.fPendidikanPengajaran))) == null)

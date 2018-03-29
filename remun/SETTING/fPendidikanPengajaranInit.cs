@@ -884,8 +884,14 @@ namespace remun.SETTING
 
         private void bLoad_Click(object sender, EventArgs e)
         {
-            lvTampil.Items.Clear();
-            LoadInitTahun(1);
+            if (MessageBox.Show("Load Data pada bulan: " + cbBulan.Text + " tahun: " + cbTahun.Text + "?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                _Pendidikan_Pengajaran_Init.Clear();
+                _Pendidikan_Pengajaran_Init_temp.Clear();
+                lvTampil.Items.Clear();
+                Bersih2();
+                LoadInitTahun(1);
+            }
         }
 
         private void Bersih2()
@@ -976,7 +982,7 @@ namespace remun.SETTING
 
             if (bSimpan.Text == "Save")
             {
-                if (MessageBox.Show("Apakah sudah fix?", "Confirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show("Apakah sudah fix?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     bSimpan.Text = "FIX?";
                     bSimpan.BackColor = Color.Red;

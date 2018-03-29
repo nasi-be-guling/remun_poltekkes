@@ -379,7 +379,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(806, 958);
+            this.ClientSize = new System.Drawing.Size(806, 749);
             this.Controls.Add(this.cbBulan);
             this.Controls.Add(this.bTambah);
             this.Controls.Add(this.bReset);
